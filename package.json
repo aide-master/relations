@@ -1,15 +1,30 @@
 {
   "name": "relations",
   "private": true,
+  "scripts": {
+    "lint": "eslint . --ext .ts,.tsx,.js,jsx",
+    "lint:git": "eslint --ext .ts,.tsx,.js,jsx `git diff-index --diff-filter=ACM --name-only HEAD | grep -E '.(js|jsx|ts|tsx)$'`"
+  },
   "devDependencies": {
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^1.12.0",
+    "@typescript-eslint/parser": "^1.12.0",
+    "eslint": "^6.0.1",
+    "eslint-plugin-i18n": "^1.2.2",
+    "eslint-plugin-jest": "^22.10.0",
+    "eslint-plugin-react": "^7.14.2",
+    "eslint-plugin-react-hooks": "^1.6.1",
     "husky": "^3.0.0",
     "lerna": "^3.15.0"
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "npm run lint:git"
     }
+  },
+  "dependencies": {
+    "typescript": "^3.5.3"
   }
 }
