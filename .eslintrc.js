@@ -6,5 +6,8 @@ module.exports = {
   env: {
     node: true,
     jest: true
+  },
+  rules: {
+    '@typescript-eslint/strict-boolean-expressions': 'off'
   }
 }

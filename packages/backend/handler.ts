@@ -1,6 +1,8 @@
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import 'source-map-support/register'
 
+export { search } from './controllers/search'
+
 export const hello: APIGatewayProxyHandler = async (event, _context) => {
   await 1
   return {
