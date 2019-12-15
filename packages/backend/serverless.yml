@@ -7,18 +7,44 @@ service:
 custom:
   webpack:
     webpackConfig: ./webpack.config.js
-    includeModules: true
+    includeModules:
+      forceExclude:
+        - aws-sdk
+  serverless-offline:
+    httpsProtocol: "dev-certs"
+    port: 3886
+  domains:
+    prod: relations.aidemaster.com
+    staging: staging-relations.aidemaster.com
+    dev: dev-relations.aidemaster.com
+
+  customDomain:
+    domainName: ${self:custom.domains.${self:provider.environment.stage}} # Change this to your domain.
+    basePath: 'api' # This will be prefixed to all routes
+    stage: ${self:provider.environment.stage}
+    createRoute53Record: true
+
+  sentry:
+    dsn: ${self:provider.environment.sentryDSN}
+
 
 # Add the serverless-webpack plugin
 plugins:
+  - serverless-sentry
   - serverless-webpack
+  - serverless-domain-manager
+  - serverless-offline
 
 provider:
   name: aws
   runtime: nodejs12.x
+  stage: dev
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  memorySize: 256
   environment:
+    stage: ${opt:stage, self:provider.stage}
+    sentryDSN: ${ssm:/${self:provider.environment.stage}/relations/sentryDSN}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 
 functions:
