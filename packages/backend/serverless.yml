@@ -11,7 +11,7 @@ custom:
       forceExclude:
         - aws-sdk
   serverless-offline:
-    httpsProtocol: "dev-certs"
+    # httpsProtocol: "dev-certs"
     port: 3886
   domains:
     prod: relations.aidemaster.com
