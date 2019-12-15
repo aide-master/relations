@@ -1,6 +1,6 @@
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import * as Joi from '@hapi/joi'
-import { getWikiUrl, validate, rest, run } from '../utils'
+import { getWikiUrl, validate, rest, run, getLinksFromHtml } from '../utils'
 
 export const search: APIGatewayProxyHandler = run(async (event, _context) => {
   const { word, lang } = validate(event.queryStringParameters || {}, Joi.object({
@@ -8,15 +8,13 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
     lang: Joi.string()
   }))
   const url = getWikiUrl(word, lang)
-  console.log({ url })
-  const result = await rest.get(url)
-  // const result = await rest.get('https://banyudu.com')
-  console.log(result)
+  const htmlRes = await rest.get(url)
+  const result = getLinksFromHtml(htmlRes.data)
   return {
     statusCode: 200,
     body: JSON.stringify({
       code: 200,
-      data: result.data
+      data: result
     })
   }
 })

@@ -60,4 +60,10 @@ functions:
       - http:
           method: get
           path: search
+  test:
+    handler: handler.test
+    events:
+      - http:
+          method: get
+          path: test
 

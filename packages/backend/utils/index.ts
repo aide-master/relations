@@ -2,6 +2,8 @@ import * as Joi from '@hapi/joi'
 import { APIGatewayProxyHandler } from 'aws-lambda'
 import axios, { AxiosRequestConfig } from 'axios'
 import SocksProxyAgent from 'socks-proxy-agent'
+import { AnyObject } from '../types'
+import { parse } from 'node-html-parser'
 
 export const getWikiUrl = (word: string, lang: string = 'en'): string => {
   const host = `https://${lang}.wikipedia.org`
@@ -49,3 +51,23 @@ if (process.env.IS_OFFLINE) {
 }
 
 export const rest = axios.create(axiosOptions)
+
+const wikiLinkRegexp = /href="\/wiki\/(?!Category:|Special:|Wikipedia:|Project:|Help:|Portal:|Task:)[^\s"]+"/
+
+const getLinks = (node: any, links: AnyObject<number> = {}): AnyObject<number> => {
+  if (node.tagName === 'a' && wikiLinkRegexp.test(node.rawAttrs)) {
+    const key = (node.childNodes && node.childNodes[0] && node.childNodes[0].rawText) || null
+    if (key) {
+      links[key] = (links[key] || 0) + 1
+    }
+  }
+  for (const child of node.childNodes || []) {
+    getLinks(child, links)
+  }
+  return links
+}
+
+export const getLinksFromHtml = (html: string): AnyObject<number> => {
+  const root = parse(html)
+  return getLinks(root)
+}
