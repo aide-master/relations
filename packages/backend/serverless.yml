@@ -14,13 +14,13 @@ custom:
     # httpsProtocol: "dev-certs"
     port: 3886
   domains:
-    prod: relations.aidemaster.com
-    staging: staging-relations.aidemaster.com
-    dev: dev-relations.aidemaster.com
+    prod: api.aidemaster.com
+    staging: staging-api.aidemaster.com
+    dev: dev-api.aidemaster.com
 
   customDomain:
     domainName: ${self:custom.domains.${self:provider.environment.stage}} # Change this to your domain.
-    basePath: 'api' # This will be prefixed to all routes
+    basePath: 'relations' # This will be prefixed to all routes
     stage: ${self:provider.environment.stage}
     createRoute53Record: true
 
