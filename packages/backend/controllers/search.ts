@@ -13,7 +13,7 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
   const result = getLinksFromHtml(htmlRes.data)
   let sortedResult: Array<[string, number]> = []
   if (sort) {
-    sortedResult = Object.keys(result).sort((a, b) => result[a] - result[b]).map(item => [item, result[item]])
+    sortedResult = Object.keys(result).sort((a, b) => result[b] - result[a]).map(item => [item, result[item]])
   }
   return {
     statusCode: 200,
