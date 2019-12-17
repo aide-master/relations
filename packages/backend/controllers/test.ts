@@ -3,11 +3,12 @@ import { run, getLinksFromHtml } from '../utils'
 
 export const test: APIGatewayProxyHandler = run(async (event, _context) => { // eslint-disable-line @typescript-eslint/require-await
   const result = getLinksFromHtml(demoHtml)
+  const sortedResult = Object.keys(result).sort((a, b) => result[b] - result[a]).map(item => [item, result[item]])
   return {
     statusCode: 200,
     body: JSON.stringify({
       code: 200,
-      data: result
+      data: sortedResult
     })
   }
 })
