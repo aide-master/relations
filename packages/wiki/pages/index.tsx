@@ -2,8 +2,6 @@ import React from 'react'
 import { Button } from 'antd'
 import './index.css'
 
-console.log('button is: ', Button)
-
 const App: React.FC = () => {
   return (
     <div className='App'>
