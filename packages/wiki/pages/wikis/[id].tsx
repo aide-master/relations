@@ -10,7 +10,7 @@ const Wiki: React.FC = () => {
   const [relations, setRelations] = useState<Relation[]>([])
   useEffect(() => {
     (async () => {
-      const url = `https://api.aidemaster.com/relations/${router.query.id}?sort=true&lang=zh`
+      const url = `https://api.aidemaster.com/relations/search?word=${router.query.id}&sort=true&lang=zh`
       const res = await axios.get(url)
       setRelations(res.data.data)
     })().catch(console.error)
