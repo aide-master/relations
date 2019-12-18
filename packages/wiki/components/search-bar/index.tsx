@@ -1,5 +1,6 @@
 import React from 'react'
 import { Input } from 'antd'
+import router from 'next/router'
 
 const Search = Input.Search
 
@@ -10,7 +11,7 @@ const SearchBar: React.FC = () => {
       placeholder='search wiki'
       style={{ width: '300px' }}
       enterButton
-      onSearch={value => console.log(value)}
+      onSearch={async value => router.push(`/wikis/${value}`)}
     />
   )
 }
