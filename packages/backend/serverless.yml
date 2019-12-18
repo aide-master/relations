@@ -48,22 +48,18 @@ provider:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
 
 functions:
-  hello:
-    handler: handler.hello
-    events:
-      - http:
-          method: get
-          path: hello
   search:
     handler: handler.search
     events:
       - http:
           method: get
           path: search
+          cors: true
   test:
     handler: handler.test
     events:
       - http:
           method: get
           path: test
+          cors: true
 

@@ -1,0 +1,1 @@
+type Relation = [string, number]
