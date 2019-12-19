@@ -1,5 +1,5 @@
 import * as Joi from '@hapi/joi'
-import { APIGatewayProxyHandler } from 'aws-lambda'
+import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 import axios, { AxiosRequestConfig } from 'axios'
 import SocksProxyAgent from 'socks-proxy-agent'
 import { AnyObject } from '../types'
@@ -22,12 +22,12 @@ type ControllerWrapper = (func: APIGatewayProxyHandler) => APIGatewayProxyHandle
 
 export const run: ControllerWrapper = (func) => {
   return async (event, _context, callback) => {
+    let result: APIGatewayProxyResult
     try {
-      const result: any = await func(event, _context, callback)
-      return result
+      result = (await func(event, _context, callback)) as APIGatewayProxyResult
     } catch (error) {
       console.error('error: ', error)
-      return {
+      result = {
         statusCode: 200,
         body: JSON.stringify({
           code: 1,
@@ -35,6 +35,9 @@ export const run: ControllerWrapper = (func) => {
         }, null, 2)
       }
     }
+    result.headers['Access-Control-Allow-Origin'] = '*'
+    result.headers['Access-Control-Allow-Credentials'] = true
+    return result
   }
 }
 
