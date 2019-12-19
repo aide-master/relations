@@ -35,8 +35,10 @@ export const run: ControllerWrapper = (func) => {
         }, null, 2)
       }
     }
-    result.headers['Access-Control-Allow-Origin'] = '*'
-    result.headers['Access-Control-Allow-Credentials'] = true
+    result.headers = Object.assign({
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Credentials': true
+    }, result.headers)
     return result
   }
 }
