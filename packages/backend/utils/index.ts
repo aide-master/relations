@@ -60,16 +60,16 @@ export const rest = axios.create(axiosOptions)
 const wikiLinkRegexp = /href="\/wiki\/(?!Category:|Special:|Wikipedia:|Project:|Help:|Portal:|Task:|Template:)[^\s"]+"/
 
 const getLinks = (node: any, links: AnyObject<number> = {}): AnyObject<number> => {
-  if (node.tagName === 'a' &&
-    wikiLinkRegexp.test(node.rawAttrs) && // 关键词排除
-    !(node.classNames || []).includes('reflist')) { // 排除引用部分
+  if (node.tagName === 'a' && wikiLinkRegexp.test(node.rawAttrs)) { // 排除引用部分
     const key = (node.childNodes && node.childNodes[0] && node.childNodes[0].rawText) || null
     if (key) {
       links[key] = (links[key] || 0) + 1
     }
   }
-  for (const child of node.childNodes || []) {
-    getLinks(child, links)
+  if (!(node.classNames || []).includes('reflist')) { // 排除引用部分
+    for (const child of node.childNodes || []) {
+      getLinks(child, links)
+    }
   }
   return links
 }
