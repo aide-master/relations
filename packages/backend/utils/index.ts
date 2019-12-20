@@ -72,7 +72,8 @@ const getLinks = (node: any, links: AnyObject<number>, options: GetLinksOptions)
       links[url] = (links[url] || 0) + 1
     }
   }
-  if (!(node.classNames || []).includes('reflist')) { // 排除引用部分
+  const classBlacklist = ['reflist', 'navbox']
+  if (!classBlacklist.filter(item => (node.classNames || []).includes(item)).length) { // 排除引用部分
     for (const child of node.childNodes || []) {
       getLinks(child, links, options)
     }
