@@ -10,7 +10,7 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
   }))
   const url = getWikiUrl(word, lang)
   const htmlRes = await rest.get(url)
-  const result = getLinksFromHtml(htmlRes.data)
+  const result = getLinksFromHtml(htmlRes.data, word)
   let sortedResult: Array<[string, number]> = []
   if (sort) {
     sortedResult = Object.keys(result).sort((a, b) => result[b] - result[a]).map(item => [item, result[item]])

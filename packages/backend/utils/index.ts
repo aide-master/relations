@@ -57,24 +57,35 @@ if (process.env.IS_OFFLINE) {
 
 export const rest = axios.create(axiosOptions)
 
-const wikiLinkRegexp = /href="\/wiki\/(?!Category:|Special:|Wikipedia:|Project:|Help:|Portal:|Task:|Template:)[^\s"]+"/
+const wikiLinkRegexp = /href="\/wiki\/((?!Category:|Special:|Wikipedia:|Project:|Help:|Portal:|Talk:|Task:|Template:)[^\s"]+)"/
 
-const getLinks = (node: any, links: AnyObject<number> = {}): AnyObject<number> => {
-  if (node.tagName === 'a' && wikiLinkRegexp.test(node.rawAttrs)) { // 排除引用部分
+interface GetLinksOptions {
+  exclude: (name: string, url: string) => boolean
+}
+
+const getLinks = (node: any, links: AnyObject<number>, options: GetLinksOptions): AnyObject<number> => {
+  const match = wikiLinkRegexp.exec(node.rawAttrs) // 排除引用部分，并捕捉url
+  if (node.tagName === 'a' && match) {
+    const url = match[1]
     const key = (node.childNodes && node.childNodes[0] && node.childNodes[0].rawText) || null
-    if (key) {
+    if (key && !options.exclude(key, url)) {
       links[key] = (links[key] || 0) + 1
     }
   }
   if (!(node.classNames || []).includes('reflist')) { // 排除引用部分
     for (const child of node.childNodes || []) {
-      getLinks(child, links)
+      getLinks(child, links, options)
     }
   }
   return links
 }
 
-export const getLinksFromHtml = (html: string): AnyObject<number> => {
+export const getLinksFromHtml = (html: string, self: string): AnyObject<number> => {
   const root = parse(html)
-  return getLinks(root)
+  const excludeNames = [self, encodeURIComponent(self), decodeURIComponent(self)]
+  const excludeNameSet = new Set(excludeNames)
+  const excludeFunc = (name: string, url: string): boolean => {
+    return excludeNameSet.has(name) || excludeNameSet.has(url)
+  }
+  return getLinks(root, {}, { exclude: excludeFunc })
 }
