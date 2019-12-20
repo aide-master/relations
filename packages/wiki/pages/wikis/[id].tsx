@@ -5,13 +5,16 @@ import Link from 'next/link'
 import SearchBar from '../../components/search-bar'
 import RelationItem from '../../components/relation-item'
 import axios from 'axios'
-import './index.css'
+import './index.less'
 
 const Wiki: React.FC = () => {
   const router = useRouter()
   const [relations, setRelations] = useState<Relation[]>([])
   useEffect(() => {
     (async () => {
+      if (!router.query.id) {
+        return
+      }
       const url = `https://api.aidemaster.com/relations/search?word=${router.query.id}&sort=true&lang=zh`
       const res = await axios.get(url)
       setRelations(res.data.data)
@@ -24,7 +27,7 @@ const Wiki: React.FC = () => {
         <Breadcrumb.Item> <Link href='/wikis/[id]' as={`/wikis/${router.query.id}`}><a>{router.query.id}</a></Link> </Breadcrumb.Item>
       </Breadcrumb>
       <div> <h2>{router.query.id}</h2> <SearchBar /> </div>
-      <div>
+      <div className='relations'>
         {
           (relations || []).map(relation =>
             <RelationItem

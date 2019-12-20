@@ -1,6 +1,5 @@
 import React from 'react'
 // import router from 'next/router'
-import { Tooltip } from 'antd'
 import './index.less'
 
 interface RelationItemProps {
@@ -10,18 +9,14 @@ interface RelationItemProps {
 }
 
 const RelationItem: React.FC<RelationItemProps> = (props: RelationItemProps) => {
-  const maxWidthPercent = 80
+  const maxWidthPercent = 75
   let widthPercent = props.max ? maxWidthPercent * props.factor / props.max : 1
   widthPercent = Math.max(1, Math.min(widthPercent, maxWidthPercent))
   return (
     <div className='relation-item'>
-      <Tooltip title={`${props.name}: ${props.factor}`}>
-        <div className='row'>
-          <span className='name'>{props.name}</span>
-          <span className='value' style={{ width: `${widthPercent}%`, display: 'inline-block' }} />
-          {props.factor}
-        </div>
-      </Tooltip>
+      <span className='name'>{props.name}</span>
+      <div className='value' style={{ width: `${widthPercent}%`, display: 'inline-block' }} />
+      {props.factor}
     </div>
   )
 }
