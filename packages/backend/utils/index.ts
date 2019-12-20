@@ -57,7 +57,7 @@ if (process.env.IS_OFFLINE) {
 
 export const rest = axios.create(axiosOptions)
 
-const wikiLinkRegexp = /href="\/wiki\/((?!Category:|Special:|Wikipedia:|Project:|Help:|Portal:|Talk:|Task:|Template:|Template_talk:)[^\s"]+)"/
+const wikiLinkRegexp = /href="\/wiki\/((?!Category:|File:|Special:|Wikipedia:|Project:|Help:|Portal:|Talk:|Task:|Template:|Template_talk:)[^\s"]+)"/
 
 interface GetLinksOptions {
   exclude: (url: string) => boolean
