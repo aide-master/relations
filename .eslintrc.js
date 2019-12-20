@@ -1,7 +1,10 @@
 module.exports = {
   extends: ['standard-with-typescript', 'standard-react'],
   parserOptions: {
-    project: './tsconfig.json'
+    project: [
+      './packages/wiki/tsconfig.json',
+      './packages/backend/tsconfig.json'
+    ]
   },
   env: {
     node: true,
