@@ -3,13 +3,21 @@
 .relation-item {
   .name {
     display: inline-block;
-    width: 20%;
+    width: 30%;
     height: @line-height;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
-  .value {
+  .bar {
     display: inline-block;
     background-color: #1890ff;
     height: @line-height;
-    margin-right: 4px;
+  }
+
+  .value {
+    display: inline-block;
+    width: 5%;
+    padding-left: 8px;
   }
 }
