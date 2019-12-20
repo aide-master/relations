@@ -10,14 +10,17 @@ import './index.less'
 const Wiki: React.FC = () => {
   const router = useRouter()
   const [relations, setRelations] = useState<Relation[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
   useEffect(() => {
     (async () => {
       if (!router.query.id) {
         return
       }
       const url = `https://api.aidemaster.com/relations/search?word=${router.query.id}&sort=true&lang=zh`
+      setLoading(true)
       const res = await axios.get(url)
       setRelations(res.data.data)
+      setLoading(false)
     })().catch(console.error)
   }, [router.query.id])
   return (
@@ -37,6 +40,7 @@ const Wiki: React.FC = () => {
               max={relations ? relations[0][1] : 0}
             />)
         }
+        {((!relations || !relations.length) && !loading) && '没有结果'}
       </div>
     </div>
   )

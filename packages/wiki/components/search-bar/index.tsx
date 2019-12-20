@@ -11,7 +11,7 @@ const SearchBar: React.FC = () => {
       placeholder='search wiki'
       style={{ width: '300px' }}
       enterButton
-      onSearch={async value => router.push(`/wikis/${value}`)}
+      onSearch={async value => value && router.push(`/wikis/${value}`)}
     />
   )
 }
