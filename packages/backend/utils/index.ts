@@ -57,19 +57,19 @@ if (process.env.IS_OFFLINE) {
 
 export const rest = axios.create(axiosOptions)
 
-const wikiLinkRegexp = /href="\/wiki\/((?!Category:|Special:|Wikipedia:|Project:|Help:|Portal:|Talk:|Task:|Template:)[^\s"]+)"/
+const wikiLinkRegexp = /href="\/wiki\/((?!Category:|Special:|Wikipedia:|Project:|Help:|Portal:|Talk:|Task:|Template:|Template_talk:)[^\s"]+)"/
 
 interface GetLinksOptions {
-  exclude: (name: string, url: string) => boolean
+  exclude: (url: string) => boolean
 }
 
 const getLinks = (node: any, links: AnyObject<number>, options: GetLinksOptions): AnyObject<number> => {
   const match = wikiLinkRegexp.exec(node.rawAttrs) // 排除引用部分，并捕捉url
   if (node.tagName === 'a' && match) {
-    const url = match[1]
-    const key = (node.childNodes && node.childNodes[0] && node.childNodes[0].rawText) || null
-    if (key && !options.exclude(key, url)) {
-      links[key] = (links[key] || 0) + 1
+    const url = decodeURIComponent(match[1])
+    // const key = (node.childNodes && node.childNodes[0] && node.childNodes[0].rawText) || null
+    if (url && !options.exclude(url)) {
+      links[url] = (links[url] || 0) + 1
     }
   }
   if (!(node.classNames || []).includes('reflist')) { // 排除引用部分
@@ -84,8 +84,8 @@ export const getLinksFromHtml = (html: string, self: string): AnyObject<number> 
   const root = parse(html)
   const excludeNames = [self, encodeURIComponent(self), decodeURIComponent(self)]
   const excludeNameSet = new Set(excludeNames)
-  const excludeFunc = (name: string, url: string): boolean => {
-    return excludeNameSet.has(name) || excludeNameSet.has(url)
+  const excludeFunc = (url: string): boolean => {
+    return excludeNameSet.has(url)
   }
   return getLinks(root, {}, { exclude: excludeFunc })
 }
