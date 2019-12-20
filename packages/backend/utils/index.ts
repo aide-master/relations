@@ -57,7 +57,7 @@ if (process.env.IS_OFFLINE) {
 
 export const rest = axios.create(axiosOptions)
 
-const wikiLinkRegexp = /href="\/wiki\/(?!Category:|Special:|Wikipedia:|Project:|Help:|Portal:|Task:)[^\s"]+"/
+const wikiLinkRegexp = /href="\/wiki\/(?!Category:|Special:|Wikipedia:|Project:|Help:|Portal:|Task:|Template:)[^\s"]+"/
 
 const getLinks = (node: any, links: AnyObject<number> = {}): AnyObject<number> => {
   if (node.tagName === 'a' && wikiLinkRegexp.test(node.rawAttrs)) {
