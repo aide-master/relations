@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useRouter } from 'next/router'
 import { Breadcrumb } from 'antd'
 import Link from 'next/link'
@@ -7,22 +7,13 @@ import RelationItem from '../../components/relation-item'
 import axios from 'axios'
 import './index.less'
 
-const Wiki: React.FC = () => {
+interface WikiProps {
+  relations: any[]
+}
+
+const Wiki: React.FC<WikiProps> = (props) => {
   const router = useRouter()
-  const [relations, setRelations] = useState<Relation[]>([])
-  const [loading, setLoading] = useState<boolean>(true)
-  useEffect(() => {
-    (async () => {
-      if (!router.query.id) {
-        return
-      }
-      const url = `https://api.aidemaster.com/relations/search?word=${router.query.id}&sort=true&lang=zh`
-      setLoading(true)
-      const res = await axios.get(url)
-      setRelations(res.data.data)
-      setLoading(false)
-    })().catch(console.error)
-  }, [router.query.id])
+  const { relations } = props
   return (
     <div className='wiki'>
       <Breadcrumb className='breadcrumb'>
@@ -40,10 +31,17 @@ const Wiki: React.FC = () => {
               max={relations ? relations[0][1] : 0}
             />)
         }
-        {((!relations || !relations.length) && !loading) && '没有结果'}
+        {(!relations || !relations.length) && '没有结果'}
       </div>
     </div>
   )
+}
+
+(Wiki as any).getInitialProps = async function (context: any) {
+  const { id } = context.query
+  const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&sort=true&lang=zh`
+  const res = await axios.get(url)
+  return { relations: res.data.data }
 }
 
 export default Wiki

@@ -11,6 +11,7 @@ module.exports = {
     jest: true
   },
   rules: {
-    '@typescript-eslint/strict-boolean-expressions': 'off'
+    '@typescript-eslint/strict-boolean-expressions': 'off',
+    'react/prop-types': 'off'
   }
 }
