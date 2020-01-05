@@ -13,21 +13,39 @@ interface Node {
   x: number
   y: number
   r: number // radius
-  color?: string
+  color: string
+  bgColor: string
   name: string
 }
 
-const getNodesByRelations = (relations: Relation[], width: number, height: number, id: string): Node[] => {
+const getNodesByRelations = (fullRelations: Relation[], width: number, height: number, id: string): Node[] => {
   // 首先插入根节点
-  const rootNodeRadius = 30
-  const color = utils.getColorByPercent(1)
-  const rootNode: Node = { x: width / 2, y: height / 2, r: rootNodeRadius, color, name: id }
+  const rootNodeRadius = 50
+  const bgColor = utils.getColorByPercent(0)
+  const rootNode: Node = { x: width / 2, y: height / 2, r: rootNodeRadius, bgColor, name: id, color: utils.getReverseColor(bgColor, true) }
   const result: Node[] = []
   result.push(rootNode)
 
+  const relations = fullRelations.slice(0, 19) // 只取20个元素，太多了显示不过来
+
   // 再计算关系节点
-  // const totalRelationValue = relations.reduce((res, item) => res + item[1], 0)
-  // const factor = totalRelationValue / rootNodeRadius
+  if (relations.length) {
+    const max = relations[0][1]
+    const factor = (rootNodeRadius - 10) / max
+    for (const relation of relations) {
+      const radius = relation[1] * factor
+      const diameter = 2 * radius
+      const bgColor = utils.getColorByPercent((max - relation[1]) / max)
+      result.push({
+        x: Math.random() * (width - diameter) + radius,
+        y: Math.random() * (height - diameter) + radius,
+        r: radius,
+        name: relation[0],
+        bgColor,
+        color: utils.getReverseColor(bgColor, true)
+      })
+    }
+  }
   console.log('result is: ', result)
   return result
 }
@@ -54,7 +72,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
             cx={node.x}
             cy={node.y}
             r={node.r}
-            fill={node.color}
+            fill={node.bgColor}
           >
             <title>{node.name}</title>
           </circle>
@@ -63,6 +81,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
             y={node.y}
             dominantBaseline='middle'
             textAnchor='middle'
+            fill={node.color}
           >
             {node.name}
           </text>
