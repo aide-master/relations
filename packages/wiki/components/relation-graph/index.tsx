@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactNode } from 'react'
 import * as utils from '../../utils'
 // import router from 'next/router'
 // import Link from 'next/link'
@@ -50,6 +50,17 @@ const getNodesByRelations = (fullRelations: Relation[], width: number, height: n
   return result
 }
 
+const renderLine = (begin: Node, end: Node, color: string): ReactNode => {
+  const xDiff = begin.x - end.x
+  const yDiff = begin.y - end.y
+  const len = Math.sqrt(xDiff * xDiff + yDiff * yDiff)
+  const x1 = begin.x - (begin.r / len) * xDiff
+  const x2 = end.x + (end.r / len) * xDiff
+  const y1 = begin.y - (begin.r / len) * yDiff
+  const y2 = end.y + (end.r / len) * yDiff
+  return <line {...{ x1, x2, y1, y2 }} stroke='black' />
+}
+
 const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps) => {
   const svgRef = React.useRef(null)
   const [nodes, setNodes] = useState<Node[]>([])
@@ -85,6 +96,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
           >
             {node.name}
           </text>
+          {renderLine(nodes[0], node, 'black')}
         </g>
       ))}
     </svg>
