@@ -28,3 +28,5 @@ export const getReverseColor = (hex: string, bw: boolean): string => {
   }
   return [r, g, b].reduce((res, item) => res + (255 - item).toString(16).padStart(2, '0'), '#')
 }
+
+export const round2 = (num: number): number => Math.round(num * 100) / 100
