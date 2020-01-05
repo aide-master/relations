@@ -31,9 +31,9 @@ const getNodesByRelations = (fullRelations: Relation[], width: number, height: n
   // 再计算关系节点
   if (relations.length) {
     const max = relations[0][1]
-    const factor = (rootNodeRadius - 10) / max
+    const factor = (rootNodeRadius - 15) / max
     for (const relation of relations) {
-      const radius = relation[1] * factor
+      const radius = relation[1] * factor + 10
       const diameter = 2 * radius
       const bgColor = utils.getColorByPercent((max - relation[1]) / max)
       result.push({
@@ -54,6 +54,7 @@ const renderLine = (begin: Node, end: Node, color: string): ReactNode => {
   const xDiff = begin.x - end.x
   const yDiff = begin.y - end.y
   const len = Math.sqrt(xDiff * xDiff + yDiff * yDiff)
+  if (!len) return ''
   const x1 = begin.x - (begin.r / len) * xDiff
   const x2 = end.x + (end.r / len) * xDiff
   const y1 = begin.y - (begin.r / len) * yDiff
@@ -76,9 +77,10 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
       ref={svgRef}
       width={`${width}px`}
       height={`${height}px`}
+      className='relation-svg'
     >
       {nodes.map(node => (
-        <g key={node.name}>
+        <a href={`/wikis/${encodeURIComponent(node.name)}`} key={node.name}>
           <circle
             cx={node.x}
             cy={node.y}
@@ -97,7 +99,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
             {node.name}
           </text>
           {renderLine(nodes[0], node, 'black')}
-        </g>
+        </a>
       ))}
     </svg>
   )
