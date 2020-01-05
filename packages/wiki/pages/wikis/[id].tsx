@@ -1,14 +1,17 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import { Breadcrumb } from 'antd'
+import { Breadcrumb, Tabs } from 'antd'
 import Link from 'next/link'
 import SearchBar from '../../components/search-bar'
 import RelationItem from '../../components/relation-item'
+import RelationGraph from '../../components/relation-graph'
 import axios from 'axios'
 import './index.less'
 
+const { TabPane } = Tabs
+
 interface WikiProps {
-  relations: any[]
+  relations: Relation[]
 }
 
 const Wiki: React.FC<WikiProps> = (props) => {
@@ -22,16 +25,26 @@ const Wiki: React.FC<WikiProps> = (props) => {
       </Breadcrumb>
       <div> <h2>{router.query.id}</h2> <SearchBar /> </div>
       <div className='relations'>
-        {
-          (relations || []).map(relation =>
-            <RelationItem
-              key={relation[0]}
-              name={relation[0]}
-              factor={relation[1]}
-              max={relations ? relations[0][1] : 0}
-            />)
-        }
-        {(!relations || !relations.length) && '没有结果'}
+        <Tabs defaultActiveKey='graph'>
+          <TabPane tab='list' key='list'>
+            {
+              (relations || []).map(relation =>
+                <RelationItem
+                  key={relation[0]}
+                  name={relation[0]}
+                  factor={relation[1]}
+                  max={relations ? relations[0][1] : 0}
+                />)
+            }
+          </TabPane>
+          <TabPane tab='graph' key='graph'>
+            <RelationGraph
+              relations={relations || []}
+              id={router.query.id as string}
+            />
+          </TabPane>
+        </Tabs>
+        {(!relations || !relations.length) && 'Not Found'}
       </div>
     </div>
   )
