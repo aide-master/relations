@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactNode } from 'react'
 import * as utils from '../../utils'
-// import { useInterval } from '../../hooks'
+import { useWindowSize } from '../../hooks'
 // import router from 'next/router'
 // import Link from 'next/link'
 import './index.less'
@@ -146,22 +146,27 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
   const svgRef = React.useRef(null)
   const [nodes, setNodes] = useState<Node[]>([])
   // const [delay, setDelay] = useState<number>(10)
-  const [width] = useState<number>(750)
-  const [height] = useState<number>(750)
   const { relations, id } = props
+  const windowSize = useWindowSize()
   useEffect(() => {
-    // setWidth(window.screen.availWidth * 0.75)
-    // setHeight(window.screen.availHeight * 0.75)
-    let newNodes = getNodesByRelations(relations, width, height, id)
-    newNodes = arrangeElasticNodes(newNodes, width, height, 100)
-    setNodes(newNodes)
-  }, [relations])
+    if (windowSize.width && windowSize.height) {
+      console.log('width: ', windowSize.width)
+      console.log('height: ', windowSize.height)
+      let newNodes = getNodesByRelations(relations, windowSize.width, windowSize.height, id)
+      newNodes = arrangeElasticNodes(newNodes, windowSize.width, windowSize.height, 100)
+      setNodes(newNodes)
+    }
+  }, [relations, windowSize])
+
+  if (!windowSize.width || !windowSize.height) {
+    return <></>
+  }
 
   return (
     <svg
       ref={svgRef}
-      width={`${width}px`}
-      height={`${height}px`}
+      width={`${windowSize.width}px`}
+      height={`${windowSize.height}px`}
       className='relation-svg'
     >
       {nodes.map(node => (
