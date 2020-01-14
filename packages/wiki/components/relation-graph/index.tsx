@@ -148,12 +148,11 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
   // const [delay, setDelay] = useState<number>(10)
   const { relations, id } = props
   const windowSize = useWindowSize()
+  const widthMargin = 16
   useEffect(() => {
     if (windowSize.width && windowSize.height) {
-      console.log('width: ', windowSize.width)
-      console.log('height: ', windowSize.height)
-      let newNodes = getNodesByRelations(relations, windowSize.width, windowSize.height, id)
-      newNodes = arrangeElasticNodes(newNodes, windowSize.width, windowSize.height, 100)
+      let newNodes = getNodesByRelations(relations, windowSize.width - widthMargin, windowSize.height, id)
+      newNodes = arrangeElasticNodes(newNodes, windowSize.width - widthMargin, windowSize.height, 100)
       setNodes(newNodes)
     }
   }, [relations, windowSize])
@@ -165,7 +164,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
   return (
     <svg
       ref={svgRef}
-      width={`${windowSize.width}px`}
+      width={`${windowSize.width - widthMargin}px`}
       height={`${windowSize.height}px`}
       className='relation-svg'
     >
