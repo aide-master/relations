@@ -1,6 +1,7 @@
 import React from 'react'
 import { Input } from 'antd'
 import router from 'next/router'
+import './index.less'
 
 const Search = Input.Search
 
