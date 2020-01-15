@@ -4,7 +4,7 @@ import { useWindowInnerSize, useWindowOuterSize } from '../../hooks'
 // import router from 'next/router'
 // import Link from 'next/link'
 import './index.less'
-import * as isMobile from 'is-mobile'
+import { isMobile } from 'is-mobile'
 
 interface RelationCanvasProps {
   relations: Relation[]
