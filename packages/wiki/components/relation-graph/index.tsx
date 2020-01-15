@@ -61,7 +61,7 @@ const renderLine = (begin: Node, end: Node, color: string): ReactNode => {
   const x2 = end.x + (end.r / len) * xDiff
   const y1 = begin.y - (begin.r / len) * yDiff
   const y2 = end.y + (end.r / len) * yDiff
-  return <line {...{ x1, x2, y1, y2 }} stroke='black' />
+  return <line key={begin.name} {...{ x1, x2, y1, y2 }} stroke='black' />
 }
 
 const maxForce = (force: number): number => Math.max(-1000, Math.min(1000, force))
@@ -176,6 +176,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
       height={`${windowInnerSize.height}px`}
       className='relation-svg'
     >
+      {nodes.map(node => renderLine(nodes[0], node, 'black'))}
       {nodes.map(node => (
         <a href={`/wikis/${encodeURIComponent(node.name)}`} key={node.name}>
           <circle
@@ -195,7 +196,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
           >
             {node.name}
           </text>
-          {renderLine(nodes[0], node, 'black')}
+          {/* {renderLine(nodes[0], node, 'black')} */}
         </a>
       ))}
     </svg>
