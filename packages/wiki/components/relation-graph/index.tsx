@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactNode } from 'react'
 import * as utils from '../../utils'
-import { useWindowSize } from '../../hooks'
+import { useWindowInnerSize, useWindowOuterSize } from '../../hooks'
 // import router from 'next/router'
 // import Link from 'next/link'
 import './index.less'
@@ -147,25 +147,26 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
   const [nodes, setNodes] = useState<Node[]>([])
   // const [delay, setDelay] = useState<number>(10)
   const { relations, id } = props
-  const windowSize = useWindowSize()
+  const windowInnerSize = useWindowInnerSize()
+  const windowOuterSize = useWindowOuterSize()
   const widthMargin = 16
   useEffect(() => {
-    if (windowSize.width && windowSize.height) {
-      let newNodes = getNodesByRelations(relations, windowSize.width - widthMargin, windowSize.height, id)
-      newNodes = arrangeElasticNodes(newNodes, windowSize.width - widthMargin, windowSize.height, 100)
+    if (windowInnerSize.width && windowInnerSize.height) {
+      let newNodes = getNodesByRelations(relations, windowInnerSize.width - widthMargin, windowInnerSize.height, id)
+      newNodes = arrangeElasticNodes(newNodes, windowInnerSize.width - widthMargin, windowInnerSize.height, 100)
       setNodes(newNodes)
     }
-  }, [relations, windowSize])
+  }, [relations, windowOuterSize]) // 当outerSize变化时才重新渲染，但是渲染的时候会使用innerSize。主要是为了处理移动端url bar隐藏时的 window resize
 
-  if (!windowSize.width || !windowSize.height) {
+  if (!windowInnerSize.width || !windowInnerSize.height) {
     return <></>
   }
 
   return (
     <svg
       ref={svgRef}
-      width={`${windowSize.width - widthMargin}px`}
-      height={`${windowSize.height}px`}
+      width={`${windowInnerSize.width - widthMargin}px`}
+      height={`${windowInnerSize.height}px`}
       className='relation-svg'
     >
       {nodes.map(node => (
