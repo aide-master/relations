@@ -4,6 +4,7 @@ import { useWindowInnerSize, useWindowOuterSize } from '../../hooks'
 // import router from 'next/router'
 // import Link from 'next/link'
 import './index.less'
+import * as isMobile from 'is-mobile'
 
 interface RelationCanvasProps {
   relations: Relation[]
@@ -150,8 +151,14 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
   const windowInnerSize = useWindowInnerSize()
   const windowOuterSize = useWindowOuterSize()
   const widthMargin = 16
+
+  // 如果是移动设备，则不存在resize的情况，锁定一次即可
   useEffect(() => {
     if (windowInnerSize.width && windowInnerSize.height) {
+      const mobileOrTablet = isMobile({ tablet: true })
+      if (mobileOrTablet && nodes.length) {
+        return
+      }
       let newNodes = getNodesByRelations(relations, windowInnerSize.width - widthMargin, windowInnerSize.height, id)
       newNodes = arrangeElasticNodes(newNodes, windowInnerSize.width - widthMargin, windowInnerSize.height, 100)
       setNodes(newNodes)
