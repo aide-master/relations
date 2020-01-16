@@ -64,6 +64,31 @@ const renderLine = (begin: Node, end: Node, color: string): ReactNode => {
   return <line key={end.name} {...{ x1, x2, y1, y2 }} stroke='black' />
 }
 
+const renderCircle = (node: Node): ReactNode =>
+  <a href={`/wikis/${encodeURIComponent(node.name)}`} key={`circle-${node.name}`}>
+    <circle
+      cx={node.x}
+      cy={node.y}
+      r={node.r}
+      fill={node.bgColor}
+    >
+      <title>{node.name}</title>
+    </circle>
+  </a>
+
+const renderTitle = (node: Node): ReactNode =>
+  <a href={`/wikis/${encodeURIComponent(node.name)}`} key={`text-${node.name}`}>
+    <text
+      x={node.x}
+      y={node.y}
+      dominantBaseline='middle'
+      textAnchor='middle'
+      fill={node.color}
+    >
+      {node.name}
+    </text>
+  </a>
+
 const maxForce = (force: number): number => Math.max(-1000, Math.min(1000, force))
 
 const arrangeElasticNodes = (nodes: Node[], width: number, height: number, times: number = 1): Node[] => {
@@ -177,28 +202,8 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
       className='relation-svg'
     >
       {nodes.map(node => renderLine(nodes[0], node, 'black'))}
-      {nodes.map(node => (
-        <a href={`/wikis/${encodeURIComponent(node.name)}`} key={node.name}>
-          <circle
-            cx={node.x}
-            cy={node.y}
-            r={node.r}
-            fill={node.bgColor}
-          >
-            <title>{node.name}</title>
-          </circle>
-          <text
-            x={node.x}
-            y={node.y}
-            dominantBaseline='middle'
-            textAnchor='middle'
-            fill={node.color}
-          >
-            {node.name}
-          </text>
-          {/* {renderLine(nodes[0], node, 'black')} */}
-        </a>
-      ))}
+      {nodes.map(node => renderCircle(node))}
+      {nodes.map(node => renderTitle(node))}
     </svg>
   )
 }
