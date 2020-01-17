@@ -21,7 +21,7 @@ const Wiki: React.FC<WikiProps> = (props) => {
     <div className='wiki'>
       <Breadcrumb className='breadcrumb'>
         <Breadcrumb.Item> <Link href='/'><a>Home</a></Link> </Breadcrumb.Item>
-        <Breadcrumb.Item> <Link href='/wikis/[id]' as={`/wikis/${router.query.id}`}><a>{router.query.id}</a></Link> </Breadcrumb.Item>
+        <Breadcrumb.Item> <Link href='/wikis/[id]' as={`/wikis/${router.query.id}`} prefetch={false}><a>{router.query.id}</a></Link> </Breadcrumb.Item>
       </Breadcrumb>
       <div className='headerbar'> <h2 title={router.query.id as string}>{router.query.id}</h2> <SearchBar /> </div>
       <div className='relations'>

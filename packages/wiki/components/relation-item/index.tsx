@@ -17,7 +17,7 @@ const RelationItem: React.FC<RelationItemProps> = (props: RelationItemProps) => 
   widthPercent = Math.max(1, Math.min(widthPercent, maxWidthPercent))
   const bgColor = utils.getColorByPercent(factor / max)
   return (
-    <Link href={`/wikis/${name}`}>
+    <Link href={`/wikis/${name}`} prefetch={false}>
       <div className='relation-item'>
         <span className='name' title={name}>{name}</span>
         <div
