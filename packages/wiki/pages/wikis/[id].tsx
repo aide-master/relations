@@ -1,5 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 import { Breadcrumb } from 'antd'
 import Link from 'next/link'
 import SearchBar from '../../components/search-bar'
@@ -19,6 +20,14 @@ const Wiki: React.FC<WikiProps> = (props) => {
   const { relations } = props
   return (
     <div className='wiki'>
+      <Head>
+        <title>{`${router.query.id}的关系`}</title>
+        <meta name='description' content={`${router.query.id}的关系`} />
+        <meta name='keywords' content={[router.query.id, '关系'].join(' ')} />
+        <meta name='robots' content='index,follow' /> // 搜索优化，下同
+        <meta name='google' content='index,follow' />
+        <meta name='googlebot' content='index,follow' />
+      </Head>
       <Breadcrumb className='breadcrumb'>
         <Breadcrumb.Item> <Link href='/'><a>Home</a></Link> </Breadcrumb.Item>
         <Breadcrumb.Item> <Link href='/wikis/[id]' as={`/wikis/${router.query.id}`} prefetch={false}><a>{router.query.id}</a></Link> </Breadcrumb.Item>
