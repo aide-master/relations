@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { Breadcrumb } from 'antd'
-import Link from 'next/link'
+import { Breadcrumb, BackTop, Radio } from 'antd'
+import { Link, i18n, Router } from '../../utils/i18n'
 import SearchBar from '../../components/search-bar'
 import RelationItem from '../../components/relation-item'
 import RelationGraph from '../../components/relation-graph'
@@ -17,7 +17,17 @@ interface WikiProps {
 
 const Wiki: React.FC<WikiProps> = (props) => {
   const router = useRouter()
+  const [lang, setLang] = useState('en')
   const { relations } = props
+
+  const handleSwitchLang = async (event): Promise<void> => {
+    const newLang = event.target.value
+
+    console.log('lang is: ', newLang)
+    setLang(newLang)
+    await Router.push(`/${newLang}`)
+  }
+
   return (
     <div className='wiki'>
       <Head>
@@ -28,11 +38,21 @@ const Wiki: React.FC<WikiProps> = (props) => {
         <meta name='google' content='index,follow' />
         <meta name='googlebot' content='index,follow' />
       </Head>
+      <BackTop />
       <Breadcrumb className='breadcrumb'>
         <Breadcrumb.Item> <Link href='/'><a>Home</a></Link> </Breadcrumb.Item>
         <Breadcrumb.Item> <Link href='/wikis/[id]' as={`/wikis/${router.query.id}`} prefetch={false}><a>{router.query.id}</a></Link> </Breadcrumb.Item>
       </Breadcrumb>
-      <div className='headerbar'> <h2 title={router.query.id as string}>{router.query.id}</h2> <SearchBar /> </div>
+      <div className='headerbar'>
+        <h2 title={router.query.id as string}>{router.query.id}</h2>
+        <div className='toolbar'>
+          <Radio.Group value={lang} onChange={handleSwitchLang}>
+            <Radio.Button value='en'>English</Radio.Button>
+            <Radio.Button value='zh'>中文</Radio.Button>
+          </Radio.Group>
+          <SearchBar />
+        </div>
+      </div>
       <div className='relations'>
         <div className='relations-list'>
           {
@@ -57,9 +77,10 @@ const Wiki: React.FC<WikiProps> = (props) => {
   )
 }
 
-(Wiki as any).getInitialProps = async function (context: any) {
-  const { id } = context.query
-  const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&sort=true&lang=zh`
+(Wiki as any).getInitialProps = async function ({ query, req }) {
+  const { id } = query
+  const currentLanguage = req ? req.language : i18n.language
+  const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&sort=true&lang=${currentLanguage}`
   const res = await axios.get(url)
   return { relations: res.data.data }
 }
