@@ -7,6 +7,7 @@
     "noUnusedParameters": true,
     "sourceMap": true,
     "target": "es2017",
+    "noImplicitAny": false,
     "outDir": "lib"
   },
   "include": ["./**/*.ts"],

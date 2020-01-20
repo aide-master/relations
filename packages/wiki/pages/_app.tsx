@@ -2,6 +2,7 @@ import React from 'react'
 import App from 'next/app'
 import Router from 'next/router'
 import withGA from 'next-ga'
+import { appWithTranslation } from '../utils/i18n'
 
 class MyApp extends App {
   render (): any {
@@ -10,4 +11,4 @@ class MyApp extends App {
   }
 }
 
-export default withGA('UA-154879467-1', Router)(MyApp)
+export default withGA('UA-154879467-1', Router)(appWithTranslation(MyApp))
