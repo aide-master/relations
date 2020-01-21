@@ -1,14 +1,13 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { Breadcrumb, BackTop, Radio } from 'antd'
+import { Breadcrumb, BackTop } from 'antd'
 import SearchBar from '../../components/search-bar'
 import RelationItem from '../../components/relation-item'
 import RelationGraph from '../../components/relation-graph'
 import axios from 'axios'
 import './index.less'
 import Link from 'next/link'
-import { useCookie } from '../../hooks'
 import cookies from 'next-cookies'
 
 // const { TabPane } = Tabs
@@ -19,14 +18,7 @@ interface WikiProps {
 
 const Wiki: React.FC<WikiProps> = (props) => {
   const router = useRouter()
-  const [lang, setLang] = useCookie('lang', 'en')
   const { relations } = props
-
-  const handleSwitchLang = (event): void => {
-    const newLang = event.target.value
-    console.log('newLang: ', newLang)
-    setLang(newLang)
-  }
 
   return (
     <div className='wiki'>
@@ -45,13 +37,7 @@ const Wiki: React.FC<WikiProps> = (props) => {
       </Breadcrumb>
       <div className='headerbar'>
         <h2 title={router.query.id as string}>{router.query.id}</h2>
-        <div className='toolbar'>
-          <Radio.Group defaultValue={lang} onChange={handleSwitchLang}>
-            <Radio.Button value='en'>English</Radio.Button>
-            <Radio.Button value='zh'>中文</Radio.Button>
-          </Radio.Group>
-          <SearchBar />
-        </div>
+        <SearchBar />
       </div>
       <div className='relations'>
         <div className='relations-list'>
