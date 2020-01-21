@@ -1,8 +1,8 @@
 import React from 'react'
 // import router from 'next/router'
-import { Link } from '../../utils/i18n'
 import * as utils from '../../utils'
 import './index.less'
+import Link from 'next/link'
 
 interface RelationItemProps {
   name: string

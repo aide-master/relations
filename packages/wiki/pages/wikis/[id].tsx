@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { Breadcrumb, BackTop, Radio } from 'antd'
-import { Link, i18n, Router } from '../../utils/i18n'
 import SearchBar from '../../components/search-bar'
 import RelationItem from '../../components/relation-item'
 import RelationGraph from '../../components/relation-graph'
 import axios from 'axios'
 import './index.less'
+import Link from 'next/link'
+import { useCookie } from '../../hooks'
+import cookies from 'next-cookies'
 
 // const { TabPane } = Tabs
 
@@ -17,15 +19,13 @@ interface WikiProps {
 
 const Wiki: React.FC<WikiProps> = (props) => {
   const router = useRouter()
-  const [lang, setLang] = useState('en')
+  const [lang, setLang] = useCookie('lang', 'en')
   const { relations } = props
 
-  const handleSwitchLang = async (event): Promise<void> => {
+  const handleSwitchLang = (event): void => {
     const newLang = event.target.value
-
-    console.log('lang is: ', newLang)
+    console.log('newLang: ', newLang)
     setLang(newLang)
-    await Router.push(`/${newLang}`)
   }
 
   return (
@@ -46,7 +46,7 @@ const Wiki: React.FC<WikiProps> = (props) => {
       <div className='headerbar'>
         <h2 title={router.query.id as string}>{router.query.id}</h2>
         <div className='toolbar'>
-          <Radio.Group value={lang} onChange={handleSwitchLang}>
+          <Radio.Group defaultValue={lang} onChange={handleSwitchLang}>
             <Radio.Button value='en'>English</Radio.Button>
             <Radio.Button value='zh'>中文</Radio.Button>
           </Radio.Group>
@@ -77,12 +77,14 @@ const Wiki: React.FC<WikiProps> = (props) => {
   )
 }
 
-(Wiki as any).getInitialProps = async function ({ query, req }) {
-  const { id } = query
-  const currentLanguage = req ? req.language : i18n.language
-  const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&sort=true&lang=${currentLanguage}`
+(Wiki as any).getInitialProps = async function (ctx) {
+  const { id } = ctx.query
+  const { lang } = cookies(ctx)
+  const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&sort=true&lang=${lang}`
   const res = await axios.get(url)
-  return { relations: res.data.data }
+  return {
+    relations: res.data.data
+  }
 }
 
 export default Wiki

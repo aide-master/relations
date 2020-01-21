@@ -1,26 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Head from 'next/head'
 import './index.less'
 import SearchBar from '../components/search-bar'
 import { Select } from 'antd'
-import { useRouter } from 'next/router'
-import { i18n } from '../utils/i18n'
+import { useCookie } from '../hooks'
 
 const { Option } = Select
 
-const validLang = ['en', 'zh']
-
-interface AppProps {
-  lang: string
-}
-
-const App: React.FC<AppProps> = (props) => {
-  const defaultLang = validLang.includes(props.lang) ? props.lang : 'en'
-  const [lang, setLang] = useState(defaultLang)
-  const router = useRouter()
-  const handleSwitchLang = async (val: string) => {
+const App: React.FC = (props) => {
+  const [lang, setLang] = useCookie('lang', 'en')
+  const handleSwitchLang = (val: string) => {
     setLang(val)
-    await router.push(`/${val}`, undefined, { shallow: true })
   }
   return (
     <div className='App'>
@@ -34,16 +24,15 @@ const App: React.FC<AppProps> = (props) => {
             <Option value='en'>English</Option>
             <Option value='zh'>中文</Option>
           </Select>
-          <SearchBar lang={lang} />
+          <SearchBar />
         </div>
       </header>
     </div>
   )
 }
 
-(App as any).getInitialProps = ({ req }) => {
-  const lang = req ? req.language : i18n.language
-  return { lang }
+(App as any).getInitialProps = ({ query }) => {
+  return { lang: query.lang }
 }
 
 export default App

@@ -5,19 +5,16 @@ import './index.less'
 
 const Search = Input.Search
 
-interface SearchBarProps {
-  lang?: string
-}
-
-const SearchBar: React.FC<SearchBarProps> = (props = {}) => {
-  const { lang = 'en' } = props
+const SearchBar: React.FC = () => {
   return (
     <Search
       className='search-bar'
       placeholder='search wiki'
       style={{ width: '300px' }}
       enterButton
-      onSearch={async value => value && router.push(`/${lang}/wikis/${value}`)}
+      onSearch={async value => value && router.push({
+        pathname: `/wikis/${value}`
+      })}
     />
   )
 }
