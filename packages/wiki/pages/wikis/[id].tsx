@@ -37,7 +37,9 @@ const Wiki: React.FC<WikiProps> = (props) => {
       </Breadcrumb>
       <div className='headerbar'>
         <h2 title={router.query.id as string}>{router.query.id}</h2>
-        <SearchBar />
+        <SearchBar
+          defaultValue={router.query.id as string}
+        />
       </div>
       <div className='relations'>
         <div className='relations-list'>

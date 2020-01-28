@@ -7,7 +7,12 @@ import { useCookie } from '../../hooks'
 const Search = Input.Search
 const Option = Select.Option
 
-const SearchBar: React.FC = () => {
+interface SearchBarProps {
+  defaultValue?: string
+}
+
+const SearchBar: React.FC<SearchBarProps> = (props: SearchBarProps) => {
+  const { defaultValue = '' } = props
   const [lang, setLang] = useCookie('lang', 'en')
   const handleSwitchLang = (val: string) => {
     setLang(val)
@@ -23,6 +28,7 @@ const SearchBar: React.FC = () => {
         placeholder='search wiki'
         style={{ width: '300px' }}
         enterButton
+        defaultValue={defaultValue}
         onSearch={async value => value && router.push({
           pathname: `/wikis/${value}`
         })}
