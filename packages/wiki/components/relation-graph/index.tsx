@@ -12,6 +12,9 @@ interface RelationCanvasProps {
   id: string
 }
 
+const colors = ['#FFCDD2', '#F8BBD0', '#E1BEE7', '#D1C4E9', '#C5CAE9', '#C5CAE9', '#BBDEFB', '#B3E5FC', '#B2EBF2', '#B2DFDB',
+  '#C8E6C9', '#DCEDC8', '#F0F4C3', '#FFF9C4', '#FFECB3', '#FFE0B2', '#FFCCBC', '#D7CCC8', '#CFD8DC']
+
 const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps) => {
   const { relations, id } = props
   const windowSize = useWindowInnerSize()
@@ -31,7 +34,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
     const newData: Relation[] = [{
       name: id,
       value: 0,
-      bgColor: 'lightblue',
+      bgColor: '#29B6F6',
       relations: subRelations
     }]
 
@@ -40,7 +43,8 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
     for (let i = 0; i < size; i++) {
       subRelations.push({
         name: relations[i][0],
-        value: relations[i][1]
+        value: relations[i][1],
+        bgColor: colors[relations[i][1] % colors.length]
       })
     }
     relations.map(item => ({
