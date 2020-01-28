@@ -19,7 +19,7 @@
     "next-ga": "^2.3.4",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-relation-graph": "^0.1.5",
+    "react-relation-graph": "^0.1.6",
     "typescript": "3.5.3"
   },
   "scripts": {

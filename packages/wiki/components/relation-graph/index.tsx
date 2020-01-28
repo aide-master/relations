@@ -5,7 +5,7 @@ import './index.less'
 import ReactRelationGraph, { Relation } from 'react-relation-graph'
 import { useRouter } from 'next/router'
 
-const MAX_NODE_COUNT = 40
+const NODE_SIZE_FACTOR = 22000
 
 interface RelationCanvasProps {
   relations: WikiRelation[]
@@ -35,8 +35,9 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
       relations: subRelations
     }]
 
-    const max = Math.min(relations.length, MAX_NODE_COUNT)
-    for (let i = 0; i < max; i++) {
+    const maxSize = (windowSize.width || 0) * (windowSize.height || 0) / NODE_SIZE_FACTOR
+    const size = Math.min(relations.length, maxSize)
+    for (let i = 0; i < size; i++) {
       subRelations.push({
         name: relations[i][0],
         value: relations[i][1]
