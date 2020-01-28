@@ -13,7 +13,7 @@ import cookies from 'next-cookies'
 // const { TabPane } = Tabs
 
 interface WikiProps {
-  relations: Relation[]
+  relations: WikiRelation[]
 }
 
 const Wiki: React.FC<WikiProps> = (props) => {
