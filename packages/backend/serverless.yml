@@ -1,8 +1,16 @@
 service:
   name: relations
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - { "Fn::GetAtt": ["RelationTable", "Arn" ] }
 
 custom:
   webpack:
@@ -17,15 +25,14 @@ custom:
     prod: api.aidemaster.com
     staging: staging-api.aidemaster.com
     dev: dev-api.aidemaster.com
-
   customDomain:
     domainName: ${self:custom.domains.${self:provider.environment.stage}} # Change this to your domain.
     basePath: 'relations' # This will be prefixed to all routes
     stage: ${self:provider.environment.stage}
     createRoute53Record: true
-
   sentry:
     dsn: ${self:provider.environment.sentryDSN}
+  relationTable: 'relations-${self:provider.environment.stage}'
 
 
 # Add the serverless-webpack plugin
@@ -46,6 +53,7 @@ provider:
     stage: ${opt:stage, self:provider.stage}
     sentryDSN: ${ssm:/${self:provider.environment.stage}/relations/sentryDSN}
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    RELATION_TABLE: ${self:custom.relationTable}
 
 functions:
   search:
@@ -70,3 +78,22 @@ functions:
           path: extract
           cors: true
 
+resources:
+  Resources:
+    RelationTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: name
+            AttributeType: S
+          - AttributeName: lang
+            AttributeType: S
+        KeySchema:
+          - AttributeName: name
+            KeyType: HASH
+          - AttributeName: lang
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.tableName}

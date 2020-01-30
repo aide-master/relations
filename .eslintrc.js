@@ -13,7 +13,6 @@ module.exports = {
   rules: {
     '@typescript-eslint/strict-boolean-expressions': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
-    'react/prop-types': 'off',
-    '@typescript-eslint/require-await': 'warn'
+    'react/prop-types': 'off'
   }
 }
