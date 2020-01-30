@@ -20,7 +20,6 @@ custom:
       forceExclude:
         - aws-sdk
   serverless-offline:
-    # httpsProtocol: "dev-certs"
     port: 3886
   domains:
     prod: api.aidemaster.com
@@ -97,4 +96,4 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
-        TableName: ${self:custom.tableName}
+        TableName: ${self:custom.relationTable}
