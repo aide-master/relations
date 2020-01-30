@@ -20,4 +20,4 @@ export const Schema = new dynamoose.Schema({
   expires: 30 * 24 * 60 * 60 // 30 days
 })
 
-export default dynamoose.model('Relation', Schema)
+export default dynamoose.model(process.env.RELATION_TABLE, Schema)
