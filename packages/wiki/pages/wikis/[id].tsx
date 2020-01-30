@@ -68,7 +68,7 @@ const Wiki: React.FC<WikiProps> = (props) => {
 (Wiki as any).getInitialProps = async function (ctx) {
   const { id } = ctx.query
   const { lang } = cookies(ctx)
-  const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&sort=true&lang=${lang}`
+  const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&lang=${lang}`
   const res = await axios.get(url)
   const data = res.data.data || {}
   const relations = data.relations || data // 兼容两种不同的API，后面可直接改成data.relations
