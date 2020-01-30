@@ -2,6 +2,7 @@ import { APIGatewayProxyHandler } from 'aws-lambda'
 import * as Joi from '@hapi/joi'
 import { getWikiUrl, validate, rest, run, getLinksFromHtml } from '../utils'
 import { getExtract } from '../services/wikipedia'
+import Relation from '../models/relation'
 
 export const search: APIGatewayProxyHandler = run(async (event, _context) => {
   const { word, lang } = validate(event.queryStringParameters || {}, Joi.object({
@@ -12,15 +13,18 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
   const extract = await getExtract(word, lang)
   const htmlRes = await rest.get(url)
   const result = getLinksFromHtml(htmlRes.data, word)
-  let sortedResult: Array<[string, number]> = []
-  sortedResult = Object.keys(result).sort((a, b) => result[b] - result[a]).map(item => [item, result[item]])
+  const relations = Object.keys(result).sort((a, b) => result[b] - result[a]).map(item => [item, result[item]])
+  if (extract && relations.length) {
+    const rec = new Relation({ name: word, lang, extract, relations })
+    await rec.save()
+  }
   return {
     statusCode: 200,
     body: JSON.stringify({
       code: 200,
       data: {
         extract,
-        relations: sortedResult
+        relations
       }
     })
   }
