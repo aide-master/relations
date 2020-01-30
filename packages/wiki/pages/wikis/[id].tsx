@@ -14,11 +14,12 @@ import cookies from 'next-cookies'
 
 interface WikiProps {
   relations: WikiRelation[]
+  extract: string
 }
 
 const Wiki: React.FC<WikiProps> = (props) => {
   const router = useRouter()
-  const { relations } = props
+  const { relations, extract } = props
 
   return (
     <div className='wiki'>
@@ -41,6 +42,8 @@ const Wiki: React.FC<WikiProps> = (props) => {
           defaultValue={router.query.id as string}
         />
       </div>
+      <span className='extract'>{extract}</span>
+      <hr />
       <div className='relations'>
         <div className='relations-list'>
           {
@@ -53,6 +56,7 @@ const Wiki: React.FC<WikiProps> = (props) => {
               />)
           }
         </div>
+        <hr />
         <div className='relations-graph'>
           <RelationGraph
             relations={relations || []}
@@ -70,10 +74,10 @@ const Wiki: React.FC<WikiProps> = (props) => {
   const { lang } = cookies(ctx)
   const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&lang=${lang}`
   const res = await axios.get(url)
-  const data = res.data.data || {}
-  const relations = data.relations || data // 兼容两种不同的API，后面可直接改成data.relations
+  const { relations = [], extract = '' } = res.data.data || { }
   return {
-    relations
+    relations,
+    extract
   }
 }
 
