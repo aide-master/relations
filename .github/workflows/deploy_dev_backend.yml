@@ -2,9 +2,9 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'packages/backend/**/*'
-      - '.github/deploy_dev_backend.yml'
+    # paths:
+    #   - 'packages/backend/**/*'
+    #   - '.github/deploy_dev_backend.yml'
 name: Deploy backend
 jobs:
   deploy:
