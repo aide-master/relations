@@ -70,8 +70,10 @@ const Wiki: React.FC<WikiProps> = (props) => {
   const { lang } = cookies(ctx)
   const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&sort=true&lang=${lang}`
   const res = await axios.get(url)
+  const data = res.data.data || {}
+  const relations = data.relations || data // 兼容两种不同的API，后面可直接改成data.relations
   return {
-    relations: res.data.data
+    relations
   }
 }
 
