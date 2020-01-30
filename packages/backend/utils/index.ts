@@ -4,10 +4,27 @@ import axios, { AxiosRequestConfig } from 'axios'
 import SocksProxyAgent from 'socks-proxy-agent'
 import { AnyObject } from '../types'
 import { parse } from 'node-html-parser'
+import * as qs from 'qs'
 
 export const getWikiUrl = (word: string, lang: string = 'en'): string => {
   const host = `https://${lang}.wikipedia.org`
   return [host, 'wiki', encodeURIComponent(word)].join('/')
+}
+
+export const getWikiExtractsUrl = (words: string[], lang: string = 'en'): string => {
+  const params = {
+    format: 'json',
+    action: 'query',
+    prop: 'extracts',
+    exintro: '',
+    explaintext: '',
+    redirects: 1,
+    titles: words.join('|')
+  }
+  const host = `https://${lang}.wikipedia.org`
+  const apiUrl = [host, 'w/api.php'].join('/')
+  const result = `${apiUrl}?${qs.stringify(params)}`
+  return result
 }
 
 export const validate = (data: any, schema: Joi.AnySchema): any => {

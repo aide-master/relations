@@ -62,4 +62,11 @@ functions:
           method: get
           path: test
           cors: true
+  extract:
+    handler: handler.extract
+    events:
+      - http:
+          method: get
+          path: extract
+          cors: true
 

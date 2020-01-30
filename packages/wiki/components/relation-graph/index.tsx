@@ -44,8 +44,6 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
     }]
 
     const maxSize = (svgSize || 0) * (svgSize || 0) / NODE_SIZE_FACTOR
-    console.log('svgSize is: ', svgSize)
-    console.log('maxSize is: ', maxSize)
     const size = Math.min(relations.length, maxSize)
     for (let i = 0; i < size; i++) {
       subRelations.push({
