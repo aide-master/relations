@@ -3,7 +3,8 @@ on:
     branches:
       - master
     paths:
-      - 'packages/backend/*'
+      - 'packages/backend/**/*'
+      - '.github/deploy_dev_backend.yml'
 name: Deploy backend
 jobs:
   deploy:
