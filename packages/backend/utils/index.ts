@@ -11,7 +11,9 @@ export const getWikiUrl = (word: string, lang: string = 'en'): string => {
 }
 
 export const validate = (data: any, schema: Joi.AnySchema): any => {
-  const result = schema.validate(data)
+  const result = schema.validate(data, {
+    allowUnknown: true
+  })
   if (result.error) {
     throw result.error
   }
