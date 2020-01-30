@@ -15,7 +15,7 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
   const result = getLinksFromHtml(htmlRes.data, word)
   const relations = Object.keys(result).sort((a, b) => result[b] - result[a]).map(item => [item, result[item]])
   if (extract && relations.length) {
-    const rec = new Relation({ name: word, lang, extract, relations })
+    const rec = new Relation({ name: word, lang, extract, relations: relations.map(item => ({ key: item[0], value: item[1] })) })
     await rec.save()
   }
   return {
