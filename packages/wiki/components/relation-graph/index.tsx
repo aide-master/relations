@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { useWindowInnerSize } from '../../hooks'
+import React, { useState, useEffect, useRef } from 'react'
 import './index.less'
-// import { isMobile } from 'is-mobile'
 import ReactRelationGraph, { Relation } from 'react-relation-graph'
 import { useRouter } from 'next/router'
 
@@ -17,10 +15,11 @@ const colors = ['#FFCDD2', '#F8BBD0', '#E1BEE7', '#D1C4E9', '#C5CAE9', '#C5CAE9'
 
 const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps) => {
   const { relations, id } = props
-  const windowSize = useWindowInnerSize()
   const widthMargin = 16
   const [data, setData] = useState<Relation[]>([])
   const router = useRouter()
+  const selfRef = useRef<HTMLDivElement>(null)
+  const [svgSize, setSvgSize] = useState<number>(0)
 
   const handleClick = async (relation: Relation) => {
     await router.push({
@@ -28,7 +27,13 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
     })
   }
 
-  // 如果是移动设备，则不存在resize的情况，锁定一次即可
+  useEffect(() => {
+    const current = selfRef.current
+    if (current) {
+      setSvgSize(current.offsetWidth)
+    }
+  }, [selfRef])
+
   useEffect(() => {
     const subRelations: Relation[] = []
     const newData: Relation[] = [{
@@ -38,7 +43,9 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
       relations: subRelations
     }]
 
-    const maxSize = (windowSize.width || 0) * (windowSize.height || 0) / NODE_SIZE_FACTOR
+    const maxSize = (svgSize || 0) * (svgSize || 0) / NODE_SIZE_FACTOR
+    console.log('svgSize is: ', svgSize)
+    console.log('maxSize is: ', maxSize)
     const size = Math.min(relations.length, maxSize)
     for (let i = 0; i < size; i++) {
       subRelations.push({
@@ -52,19 +59,17 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
       value: item[1]
     }))
     setData(newData)
-  }, [relations, id]) // 当outerSize变化时才重新渲染，但是渲染的时候会使用innerSize。主要是为了处理移动端url bar隐藏时的 window resize
-
-  if (!windowSize.width || !windowSize.height) {
-    return <></>
-  }
+  }, [relations, id, svgSize])
 
   return (
-    <ReactRelationGraph
-      width={windowSize.width - widthMargin}
-      height={windowSize.height}
-      relations={data}
-      onClick={handleClick}
-    />
+    <div ref={selfRef}>
+      <ReactRelationGraph
+        width={svgSize - widthMargin}
+        height={svgSize}
+        relations={data}
+        onClick={handleClick}
+      />
+    </div>
   )
 }
 

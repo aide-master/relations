@@ -1,7 +1,7 @@
 import React from 'react'
 import Head from 'next/head'
-import './index.less'
 import SearchBar from '../components/search-bar'
+import './index.less'
 
 const App: React.FC = (props) => {
   return (

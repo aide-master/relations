@@ -1,5 +1,6 @@
 .wiki {
-  margin: 8px;
+  max-width: calc(100% - 16px);
+  margin: 8px auto;
 
   .headerbar {
     width: 100%;
@@ -16,5 +17,11 @@
 
   .relations-list {
     margin-bottom: 8px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .wiki {
+    max-width: 1024px;
   }
 }
