@@ -19,16 +19,23 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
   const dbRec: any = await Relation.get({ name: word, lang })
   console.timeEnd(`${requestId} - dynamodb query`)
   if (dbRec) {
-    extract = dbRec.extract
-    relations = (dbRec.relations || []).map(item => [item.key, item.value])
-  } else {
+    try {
+      extract = dbRec.extract
+      if (dbRec.relations) {
+        relations = (JSON.parse(dbRec.relations) || []).map(item => [item.key, item.value])
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+  if (!dbRec) {
     const url = getWikiUrl(word, lang)
     extract = await getExtract(word, lang)
     const htmlRes = await rest.get(url)
     const result = getLinksFromHtml(htmlRes.data, word)
     relations = Object.keys(result).sort((a, b) => result[b] - result[a]).map(item => [item, result[item]])
     if (extract && relations.length) {
-      const rec = new Relation({ name: word, lang, extract, relations: relations.map(item => ({ key: item[0], value: item[1] })) })
+      const rec = new Relation({ name: word, lang, extract, relations: JSON.stringify(relations.map(item => ({ key: item[0], value: item[1] }))) })
       await rec.save()
     }
   }

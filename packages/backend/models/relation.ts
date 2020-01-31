@@ -11,10 +11,7 @@ export const Schema = new dynamoose.Schema({
     validate: val => ['en', 'zh'].includes(val)
   },
   extract: String,
-  relations: [{
-    key: String,
-    value: Number
-  }] as any
+  relations: String
 }, {
   timestamps: true,
   expires: 30 * 24 * 60 * 60 // 30 days
