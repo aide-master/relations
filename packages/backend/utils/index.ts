@@ -80,6 +80,8 @@ if (process.env.IS_OFFLINE) {
   })
   axiosOptions.httpAgent = httpsAgent
   axiosOptions.httpsAgent = httpsAgent
+  axiosOptions.proxy = false
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = null
 }
 
 export const rest = axios.create(axiosOptions)
