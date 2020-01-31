@@ -41,6 +41,8 @@ type ControllerWrapper = (func: APIGatewayProxyHandler) => APIGatewayProxyHandle
 
 export const run: ControllerWrapper = (func) => {
   return async (event, _context, callback) => {
+    const requestId = event.requestContext.requestId
+    console.time(requestId)
     let result: APIGatewayProxyResult
     try {
       result = (await func(event, _context, callback)) as APIGatewayProxyResult
@@ -58,6 +60,7 @@ export const run: ControllerWrapper = (func) => {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Credentials': true
     }, result.headers)
+    console.timeEnd(requestId)
     return result
   }
 }
