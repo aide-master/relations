@@ -63,6 +63,7 @@ export const run: ControllerWrapper = (func) => {
       'Access-Control-Allow-Credentials': true
     }, result.headers)
     console.timeEnd(requestId)
+    console.log('\n')
     return result
   }
 }
