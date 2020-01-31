@@ -56,6 +56,13 @@ provider:
     RELATION_TABLE: ${self:custom.relationTable}
 
 functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          method: get
+          path: hello
+          cors: true
   search:
     handler: handler.search
     events:

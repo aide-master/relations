@@ -42,29 +42,31 @@ type ControllerWrapper = (func: APIGatewayProxyHandler) => APIGatewayProxyHandle
 
 export const run: ControllerWrapper = (func) => {
   return async (event, _context, callback) => {
-    const requestId = event.requestContext.requestId
-    session.set('requestId', requestId)
-    console.time(requestId)
-    let result: APIGatewayProxyResult
-    try {
-      result = (await func(event, _context, callback)) as APIGatewayProxyResult
-    } catch (error) {
-      console.error('error: ', error)
-      result = {
-        statusCode: 200,
-        body: JSON.stringify({
-          code: 1,
-          err: error
-        }, null, 2)
+    return session.runPromise(async () => {
+      const requestId = event.requestContext.requestId
+      session.set('requestId', requestId)
+      console.time(requestId)
+      let result: APIGatewayProxyResult
+      try {
+        result = (await func(event, _context, callback)) as APIGatewayProxyResult
+      } catch (error) {
+        console.error('error: ', error)
+        result = {
+          statusCode: 200,
+          body: JSON.stringify({
+            code: 1,
+            err: error
+          }, null, 2)
+        }
       }
-    }
-    result.headers = Object.assign({
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true
-    }, result.headers)
-    console.timeEnd(requestId)
-    console.log('\n')
-    return result
+      result.headers = Object.assign({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      }, result.headers)
+      console.timeEnd(requestId)
+      console.log('\n')
+      return result
+    })
   }
 }
 
