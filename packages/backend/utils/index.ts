@@ -5,6 +5,7 @@ import SocksProxyAgent from 'socks-proxy-agent'
 import { AnyObject } from '../types'
 import { parse } from 'node-html-parser'
 import * as qs from 'qs'
+import session from './session'
 
 export const getWikiUrl = (word: string, lang: string = 'en'): string => {
   const host = `https://${lang}.wikipedia.org`
@@ -42,6 +43,7 @@ type ControllerWrapper = (func: APIGatewayProxyHandler) => APIGatewayProxyHandle
 export const run: ControllerWrapper = (func) => {
   return async (event, _context, callback) => {
     const requestId = event.requestContext.requestId
+    session.set('requestId', requestId)
     console.time(requestId)
     let result: APIGatewayProxyResult
     try {
@@ -78,6 +80,26 @@ if (process.env.IS_OFFLINE) {
 }
 
 export const rest = axios.create(axiosOptions)
+rest.interceptors.request.use(req => {
+  const requestId = session.get('requestId')
+  console.log(`${requestId}: external request ${req.method}: ${req.url}`);
+  (req as any).startTime = new Date().getTime()
+  return req
+}, err => {
+  const requestId = session.get('requestId')
+  console.error(`${requestId}: external req error:`)
+  console.error(err)
+})
+
+rest.interceptors.response.use(res => {
+  const requestId = session.get('requestId')
+  console.log(`${requestId}: external response ${res.config.method}: ${res.config.url}, status: ${res.status}, time: ${new Date().getTime() - (res.config as any).startTime}ms`)
+  return res
+}, err => {
+  const requestId = session.get('requestId')
+  console.error(`${requestId}: external req error:`)
+  console.error(err)
+})
 
 const wikiLinkRegexp = /href="\/wiki\/((?!Category:|File:|Special:|Wikipedia:|Project:|Help:|Portal:|Talk:|Task:|Template:|Template_talk:)[^\s"]+)"/
 
