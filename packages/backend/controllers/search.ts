@@ -3,6 +3,7 @@ import * as Joi from '@hapi/joi'
 import { getWikiUrl, validate, rest, run, getLinksFromHtml } from '../utils'
 import { getExtract } from '../services/wikipedia'
 import Relation from '../models/relation'
+import session from '../utils/session'
 
 export const search: APIGatewayProxyHandler = run(async (event, _context) => {
   const { word, lang } = validate(event.queryStringParameters || {}, Joi.object({
@@ -10,9 +11,13 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
     lang: Joi.string()
   }))
 
+  const requestId = session.get('requestId')
+
   let extract: string
   let relations: Array<[string, number]>
+  console.time(`${requestId} - dynamodb query`)
   const dbRec: any = await Relation.get({ name: word, lang })
+  console.timeEnd(`${requestId} - dynamodb query`)
   if (dbRec) {
     extract = dbRec.extract
     relations = (dbRec.relations || []).map(item => [item.key, item.value])
