@@ -22,7 +22,7 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
     try {
       extract = dbRec.extract
       if (dbRec.relations) {
-        relations = (JSON.parse(dbRec.relations) || []).map(item => [item.key, item.value])
+        relations = JSON.parse(dbRec.relations) || []
       }
     } catch (error) {
       console.error(error)
@@ -35,7 +35,7 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
     const result = getLinksFromHtml(htmlRes.data, word)
     relations = Object.keys(result).sort((a, b) => result[b] - result[a]).map(item => [item, result[item]])
     if (extract && relations.length) {
-      const rec = new Relation({ name: word, lang, extract, relations: JSON.stringify(relations.map(item => ({ key: item[0], value: item[1] }))) })
+      const rec = new Relation({ name: word, lang, extract, relations: JSON.stringify(relations) })
       await rec.save()
     }
   }
