@@ -16,7 +16,7 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
   let extract: string
   let relations: Array<[string, number]>
   console.time(`${requestId} - dynamodb query`)
-  const dbRec: any = await Relation.get({ name: word, lang })
+  let dbRec: any = await Relation.get({ name: word, lang })
   console.timeEnd(`${requestId} - dynamodb query`)
   if (dbRec) {
     try {
@@ -26,6 +26,7 @@ export const search: APIGatewayProxyHandler = run(async (event, _context) => {
       }
     } catch (error) {
       console.error(error)
+      dbRec = null
     }
   }
   if (!dbRec) {
