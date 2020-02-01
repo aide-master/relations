@@ -1,0 +1,13 @@
+{
+  "region": "us-east-1",
+  "privateZone": false,
+  "domain": "aidemaster.com",
+  "subdomains": [
+    {
+      "domain": "relations.aidemaster.com",
+      "distributionId": "EJ1TF21WYKLIJ",
+      "url": "https://d35a65zhu8olmv.cloudfront.net",
+      "type": "awsCloudFront"
+    }
+  ]
+}

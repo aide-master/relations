@@ -1,0 +1,12 @@
+{
+  "name": "hc1fh8c-rplicvl",
+  "arn": "arn:aws:iam::286136663550:role/hc1fh8c-rplicvl",
+  "service": [
+    "edgelambda.amazonaws.com",
+    "lambda.amazonaws.com"
+  ],
+  "policy": {
+    "arn": "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  },
+  "region": "us-east-1"
+}
