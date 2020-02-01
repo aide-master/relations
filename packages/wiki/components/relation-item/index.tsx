@@ -8,16 +8,17 @@ interface RelationItemProps {
   name: string
   factor: number
   max: number
+  lang: Lang
 }
 
 const RelationItem: React.FC<RelationItemProps> = (props: RelationItemProps) => {
-  const { max = 1, factor, name } = props
+  const { max = 1, factor, name, lang } = props
   const maxWidthPercent = 65
   let widthPercent = max ? maxWidthPercent * factor / max : 1
   widthPercent = Math.max(1, Math.min(widthPercent, maxWidthPercent))
   const bgColor = utils.getColorByPercent(factor / max)
   return (
-    <Link href={`/wikis/${name}`} prefetch={false}>
+    <Link href={{ pathname: `/wikis/${name}`, query: { lang } }} prefetch={false}>
       <div className='relation-item'>
         <span className='name' title={name}>{name}</span>
         <div

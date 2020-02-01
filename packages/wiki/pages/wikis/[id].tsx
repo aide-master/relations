@@ -8,18 +8,20 @@ import RelationGraph from '../../components/relation-graph'
 import axios from 'axios'
 import './index.less'
 import Link from 'next/link'
-import cookies from 'next-cookies'
+import { getValidLang } from '../../utils'
 
 // const { TabPane } = Tabs
 
 interface WikiProps {
   relations: WikiRelation[]
   extract: string
+  lang: Lang
 }
 
 const Wiki: React.FC<WikiProps> = (props) => {
   const router = useRouter()
   const { relations, extract } = props
+  const lang = getValidLang(router.query.lang as string)
 
   return (
     <div className='wiki'>
@@ -40,6 +42,7 @@ const Wiki: React.FC<WikiProps> = (props) => {
         <h2 title={router.query.id as string}>{router.query.id}</h2>
         <SearchBar
           defaultValue={router.query.id as string}
+          lang={lang}
         />
       </div>
       <span className='extract'>{extract}</span>
@@ -53,6 +56,7 @@ const Wiki: React.FC<WikiProps> = (props) => {
                 name={relation[0]}
                 factor={relation[1]}
                 max={relations ? relations[0][1] : 0}
+                lang={lang}
               />)
           }
         </div>
@@ -61,6 +65,7 @@ const Wiki: React.FC<WikiProps> = (props) => {
           <RelationGraph
             relations={relations || []}
             id={router.query.id as string}
+            lang={lang}
           />
         </div>
         {(!relations || !relations.length) && 'Not Found'}
@@ -70,13 +75,13 @@ const Wiki: React.FC<WikiProps> = (props) => {
 }
 
 (Wiki as any).getInitialProps = async function (ctx) {
-  const { id } = ctx.query
-  const { lang } = cookies(ctx)
+  const { id, lang } = ctx.query
   const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&lang=${lang}`
   const res = await axios.get(url)
   const { relations = [], extract = '' } = res.data.data || { }
   return {
     relations,
+    lang: getValidLang(lang),
     extract
   }
 }

@@ -30,3 +30,5 @@ export const getReverseColor = (hex: string, bw: boolean): string => {
 }
 
 export const round2 = (num: number): number => Math.round(num * 100) / 100
+
+export const getValidLang = (lang: string): Lang => (['zh', 'en'].includes(lang) ? lang as Lang : 'en')

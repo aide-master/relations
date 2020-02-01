@@ -1,20 +1,20 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Input, Select } from 'antd'
 import router from 'next/router'
 import './index.less'
-import { useCookie } from '../../hooks'
 
 const Search = Input.Search
 const Option = Select.Option
 
 interface SearchBarProps {
   defaultValue?: string
+  lang: Lang
 }
 
 const SearchBar: React.FC<SearchBarProps> = (props: SearchBarProps) => {
   const { defaultValue = '' } = props
-  const [lang, setLang] = useCookie('lang', 'en')
-  const handleSwitchLang = (val: string) => {
+  const [lang, setLang] = useState<Lang>(props.lang)
+  const handleSwitchLang = (val: Lang) => {
     setLang(val)
   }
   return (
@@ -30,7 +30,8 @@ const SearchBar: React.FC<SearchBarProps> = (props: SearchBarProps) => {
         enterButton
         defaultValue={defaultValue}
         onSearch={async value => value && router.push({
-          pathname: `/wikis/${value}`
+          pathname: `/wikis/${value}`,
+          query: { lang }
         })}
       />
     </div>
