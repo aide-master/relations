@@ -15,8 +15,12 @@ jobs:
     - run: npm i -g serverless
     - run: npm i
       working-directory: ./packages/wiki
-    - run: sls
+    - run: |
+        echo AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> .env
+        echo AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> .env
       working-directory: ./packages/wiki
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.aws_access_key_id }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.aws_secret_access_key }}
+    - run: sls
+      working-directory: ./packages/wiki
