@@ -23,8 +23,9 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
   const [svgSize, setSvgSize] = useState<number>(0)
 
   const handleClick = async (relation: Relation) => {
+    const key = (relation.name || '').replace(' ', '_')
     await router.push({
-      pathname: `/wikis/${relation.name}`,
+      pathname: `/wikis/${key}`,
       query: { lang }
     })
   }
@@ -49,15 +50,11 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
     const size = Math.min(relations.length, maxSize)
     for (let i = 0; i < size; i++) {
       subRelations.push({
-        name: relations[i][0],
-        value: relations[i][1],
+        name: relations[i].name,
+        value: relations[i].value,
         bgColor: colors[relations[i][1] % colors.length]
       })
     }
-    relations.map(item => ({
-      name: item[0],
-      value: item[1]
-    }))
     setData(newData)
   }, [relations, id, svgSize])
 

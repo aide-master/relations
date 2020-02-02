@@ -31,6 +31,7 @@ const Wiki: React.FC<WikiProps> = (props) => {
     loadMoreBtnText = '加载更多'
   }
 
+  const maxValue = relations.reduce((res, item) => Math.max(res, item.value), 1)
   const loadMore = () => setShowSize(showSize * 2)
 
   return (
@@ -62,10 +63,10 @@ const Wiki: React.FC<WikiProps> = (props) => {
           {
             (relations || []).map((relation, index) => index >= showSize ? ''
               : <RelationItem
-                key={relation[0]}
-                name={relation[0]}
-                factor={relation[1]}
-                max={relations ? relations[0][1] : 0}
+                id={relation.id}
+                name={relation.name}
+                value={relation.value}
+                max={maxValue}
                 lang={lang}
               />)
           }
@@ -90,14 +91,14 @@ const Wiki: React.FC<WikiProps> = (props) => {
   )
 }
 
-(Wiki as any).getInitialProps = async function (ctx) {
+(Wiki as any).getInitialProps = async function (ctx): Promise<WikiProps> {
   const { id } = ctx.query
   const lang = getValidLang(ctx.query.lang, containsChinese(id) ? 'zh' : 'en')
   const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&lang=${lang}`
   const res = await axios.get(url)
   const { relations = [], extract = '' } = res.data.data || { }
   return {
-    relations,
+    relations: relations.map(item => ({ name: (item[0] || '').replace(/_/g, ' '), value: item[1], id: item[0] })),
     lang,
     extract
   }
