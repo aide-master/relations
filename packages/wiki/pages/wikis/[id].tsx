@@ -35,8 +35,8 @@ const Wiki: React.FC<WikiProps> = (props) => {
       </Head>
       <BackTop />
       <Breadcrumb className='breadcrumb'>
-        <Breadcrumb.Item> <Link href='/'><a>Home</a></Link> </Breadcrumb.Item>
-        <Breadcrumb.Item> <Link href='/wikis/[id]' as={`/wikis/${router.query.id}`} prefetch={false}><a>{router.query.id}</a></Link> </Breadcrumb.Item>
+        <Breadcrumb.Item> <Link href={{ pathname: '/', query: { lang } }}><a>Home</a></Link> </Breadcrumb.Item>
+        <Breadcrumb.Item> <Link href={{ pathname: '/wikis/[id]', query: { lang } }} as={`/wikis/${router.query.id}`} prefetch={false}><a>{router.query.id}</a></Link> </Breadcrumb.Item>
       </Breadcrumb>
       <div className='headerbar'>
         <h2 title={router.query.id as string}>{router.query.id}</h2>
