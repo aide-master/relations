@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import { Breadcrumb, BackTop } from 'antd'
+import { Breadcrumb, BackTop, Button } from 'antd'
 import SearchBar from '../../components/search-bar'
 import RelationItem from '../../components/relation-item'
 import RelationGraph from '../../components/relation-graph'
@@ -21,12 +21,17 @@ interface WikiProps {
 
 const Wiki: React.FC<WikiProps> = (props) => {
   const router = useRouter()
+  const [showSize, setShowSize] = useState<number>(50)
   const { relations, extract, lang } = props
   const name = router.query.id
   let title = `Relations of ${name}`
+  let loadMoreBtnText = 'load more'
   if (lang === 'zh') {
     title = `${name}的关系`
+    loadMoreBtnText = '加载更多'
   }
+
+  const loadMore = () => setShowSize(showSize * 2)
 
   return (
     <div className='wiki'>
@@ -55,14 +60,20 @@ const Wiki: React.FC<WikiProps> = (props) => {
       <div className='relations'>
         <div className='relations-list'>
           {
-            (relations || []).map(relation =>
-              <RelationItem
+            (relations || []).map((relation, index) => index >= showSize ? ''
+              : <RelationItem
                 key={relation[0]}
                 name={relation[0]}
                 factor={relation[1]}
                 max={relations ? relations[0][1] : 0}
                 lang={lang}
               />)
+          }
+          {
+            relations.length > showSize &&
+              <div className='load-more'>
+                <Button onClick={loadMore}>{loadMoreBtnText}</Button>
+              </div>
           }
         </div>
         <hr />
