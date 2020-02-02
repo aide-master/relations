@@ -1,6 +1,10 @@
 name: Lint
 
-on: [push]
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags-ignore:
+      - v*           # Push events to tags v*
 
 jobs:
   eslint:
