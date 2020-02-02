@@ -3,7 +3,7 @@ import './index.less'
 import ReactRelationGraph, { Relation } from 'react-relation-graph'
 import { useRouter } from 'next/router'
 
-const NODE_SIZE_FACTOR = 22000
+const NODE_SIZE_FACTOR = 20000
 
 interface RelationCanvasProps {
   relations: WikiRelation[]
