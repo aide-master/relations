@@ -10,6 +10,7 @@ import './index.less'
 import Link from 'next/link'
 import { getValidLang } from '../../utils'
 import containsChinese from 'contains-chinese'
+import { NextPage } from 'next'
 
 // const { TabPane } = Tabs
 
@@ -19,7 +20,7 @@ interface WikiProps {
   lang: Lang
 }
 
-const Wiki: React.FC<WikiProps> = (props) => {
+const Wiki: NextPage<WikiProps> = (props) => {
   const router = useRouter()
   const [showSize, setShowSize] = useState<number>(50)
   const { relations, extract, lang } = props
@@ -91,12 +92,18 @@ const Wiki: React.FC<WikiProps> = (props) => {
   )
 }
 
-(Wiki as any).getInitialProps = async function (ctx): Promise<WikiProps> {
+Wiki.getInitialProps = async function (ctx): Promise<WikiProps> {
   const { id } = ctx.query
-  const lang = getValidLang(ctx.query.lang, containsChinese(id) ? 'zh' : 'en')
+  const lang = getValidLang(ctx.query.lang as string, containsChinese(id) ? 'zh' : 'en')
   const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&lang=${lang}`
   const res = await axios.get(url)
   const { relations = [], extract = '' } = res.data.data || { }
+
+  // set cachec-control
+  if (ctx.res) {
+    ctx.res.setHeader('Cache-Control', 'max-age=86400, public')
+  }
+
   return {
     relations: relations.map(item => ({ name: (item[0] || '').replace(/_/g, ' '), value: item[1], id: item[0] })),
     lang,
