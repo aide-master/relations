@@ -94,6 +94,7 @@ rest.interceptors.request.use(req => {
   const requestId = session.get('requestId')
   console.error(`${requestId}: external req error:`)
   console.error(err)
+  throw err
 })
 
 rest.interceptors.response.use(res => {

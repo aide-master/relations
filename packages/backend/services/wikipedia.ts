@@ -38,12 +38,16 @@ export const getExtractMap = async (words: string[], lang: string): Promise<Stri
   // }
   const pages = _.get(jsonRes, 'data.query.pages') || {}
   const redirects = _.get(jsonRes, 'data.query.redirects') || []
+  const normalized = _.get(jsonRes, 'data.query.normalized') || []
   const result: StringObject = Object.keys(pages).reduce((res: StringObject, key: string) => {
     const page: any = pages[key]
     res[page.title] = page.extract
     return res
   }, {})
   for (const item of redirects) {
+    result[item.from] = result[item.to]
+  }
+  for (const item of normalized) {
     result[item.from] = result[item.to]
   }
   return result
