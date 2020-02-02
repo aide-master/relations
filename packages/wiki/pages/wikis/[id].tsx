@@ -9,6 +9,7 @@ import axios from 'axios'
 import './index.less'
 import Link from 'next/link'
 import { getValidLang } from '../../utils'
+import containsChinese from 'contains-chinese'
 
 // const { TabPane } = Tabs
 
@@ -20,8 +21,7 @@ interface WikiProps {
 
 const Wiki: React.FC<WikiProps> = (props) => {
   const router = useRouter()
-  const { relations, extract } = props
-  const lang = getValidLang(router.query.lang as string)
+  const { relations, extract, lang } = props
 
   return (
     <div className='wiki'>
@@ -75,13 +75,14 @@ const Wiki: React.FC<WikiProps> = (props) => {
 }
 
 (Wiki as any).getInitialProps = async function (ctx) {
-  const { id, lang } = ctx.query
+  const { id } = ctx.query
+  const lang = getValidLang(ctx.query.lang, containsChinese(id) ? 'zh' : 'en')
   const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&lang=${lang}`
   const res = await axios.get(url)
   const { relations = [], extract = '' } = res.data.data || { }
   return {
     relations,
-    lang: getValidLang(lang),
+    lang,
     extract
   }
 }
