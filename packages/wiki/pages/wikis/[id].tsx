@@ -95,7 +95,7 @@ const Wiki: NextPage<WikiProps> = (props) => {
 Wiki.getInitialProps = async function (ctx): Promise<WikiProps> {
   const { id } = ctx.query
   const lang = getValidLang(ctx.query.lang as string, containsChinese(id) ? 'zh' : 'en')
-  const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id)}&lang=${lang}`
+  const url = `https://api.aidemaster.com/relations/search?word=${encodeURIComponent(id as string)}&lang=${lang}`
   const res = await axios.get(url)
   const { relations = [], extract = '' } = res.data.data || { }
 
