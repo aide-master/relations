@@ -3,12 +3,20 @@ import Head from 'next/head'
 import SearchBar from '../components/search-bar'
 import './index.less'
 import { NextPage } from 'next'
+import { useRouter } from 'next/router'
+import { getUserLocale } from 'get-user-locale'
 
-interface AppProps {
-  lang: Lang
-}
-
-const App: NextPage<AppProps> = (props) => {
+const App: NextPage = () => {
+  const router = useRouter()
+  let lang: Lang = 'en'
+  if (['zh', 'en'].includes(router.query.lang as string)) {
+    lang = router.query.lang as Lang
+  } else {
+    const userLocale = getUserLocale() || ''
+    if (/^zh.*/.test(userLocale)) {
+      lang = 'zh'
+    }
+  }
   return (
     <div className='App'>
       <Head>
@@ -17,20 +25,19 @@ const App: NextPage<AppProps> = (props) => {
       <header className='App-header'>
         <img src='/logo.svg' className='App-logo' alt='logo' />
         <SearchBar
-          lang={props.lang}
+          lang={lang}
         />
       </header>
     </div>
   )
 }
 
-App.getInitialProps = ({ query, res }) => {
-  const lang: Lang = ['zh', 'en'].includes(query.lang as string) ? query.lang as Lang : 'en'
+App.getInitialProps = ({ res }) => {
   // set cachec-control
   if (res) {
     res.setHeader('Cache-Control', 'max-age=86400, public')
   }
-  return { lang }
+  return {}
 }
 
 export default App
