@@ -52,7 +52,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
       subRelations.push({
         name: relations[i].name,
         value: relations[i].value,
-        bgColor: colors[relations[i][1] % colors.length]
+        bgColor: colors[relations[i].value % colors.length]
       })
     }
     setData(newData)
