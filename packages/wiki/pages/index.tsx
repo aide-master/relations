@@ -5,6 +5,7 @@ import './index.less'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { getUserLocale } from 'get-user-locale'
+import Footer from '../components/footer'
 
 const App: NextPage = () => {
   const router = useRouter()
@@ -22,12 +23,13 @@ const App: NextPage = () => {
       <Head>
         <title>Relations</title>
       </Head>
-      <header className='App-header'>
+      <article className='App-content'>
         <img src='/logo.svg' className='App-logo' alt='logo' />
         <SearchBar
           lang={lang}
         />
-      </header>
+      </article>
+      <Footer lang={lang} />
     </div>
   )
 }

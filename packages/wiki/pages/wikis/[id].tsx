@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { getValidLang } from '../../utils'
 import containsChinese from 'contains-chinese'
 import { NextPage } from 'next'
+import Footer from '../../components/footer'
 
 // const { TabPane } = Tabs
 
@@ -24,7 +25,7 @@ const Wiki: NextPage<WikiProps> = (props) => {
   const router = useRouter()
   const [showSize, setShowSize] = useState<number>(50)
   const { relations, extract, lang } = props
-  const name = router.query.id
+  const name: string = router.query.id as string
   let title = `Relations of ${name}`
   let loadMoreBtnText = 'load more'
   if (lang === 'zh') {
@@ -51,9 +52,9 @@ const Wiki: NextPage<WikiProps> = (props) => {
         <Breadcrumb.Item> <Link href={{ pathname: '/wikis/[id]', query: { lang } }} as={`/wikis/${name}`} prefetch={false}><a>{name}</a></Link> </Breadcrumb.Item>
       </Breadcrumb>
       <div className='headerbar'>
-        <h2 title={name as string}>{name}</h2>
+        <h2 title={name}>{name}</h2>
         <SearchBar
-          defaultValue={name as string}
+          defaultValue={name}
           lang={lang}
         />
       </div>
@@ -62,14 +63,18 @@ const Wiki: NextPage<WikiProps> = (props) => {
       <div className='relations'>
         <div className='relations-list'>
           {
-            (relations || []).map((relation, index) => index >= showSize ? ''
-              : <RelationItem
-                id={relation.id}
-                name={relation.name}
-                value={relation.value}
-                max={maxValue}
-                lang={lang}
-              />)
+            relations.map((relation, index) => index >= showSize
+              ? ''
+              : (
+                <RelationItem
+                  id={relation.id}
+                  name={relation.name}
+                  value={relation.value}
+                  max={maxValue}
+                  lang={lang}
+                />
+              )
+            )
           }
           {
             relations.length > showSize &&
@@ -82,12 +87,13 @@ const Wiki: NextPage<WikiProps> = (props) => {
         <div className='relations-graph'>
           <RelationGraph
             relations={relations || []}
-            id={name as string}
+            id={name}
             lang={lang}
           />
         </div>
         {(!relations || !relations.length) && 'Not Found'}
       </div>
+      <Footer lang={lang} name={name} />
     </div>
   )
 }
