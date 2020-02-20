@@ -67,6 +67,7 @@ const Wiki: NextPage<WikiProps> = (props) => {
               ? ''
               : (
                 <RelationItem
+                  key={relation.id}
                   id={relation.id}
                   name={relation.name}
                   value={relation.value}

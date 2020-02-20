@@ -20,7 +20,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
   const [data, setData] = useState<Relation[]>([])
   const router = useRouter()
   const selfRef = useRef<HTMLDivElement>(null)
-  const [svgSize, setSvgSize] = useState<number>(0)
+  const [svgSize, setSvgSize] = useState<{ width: number, height: number }>({ width: 100, height: 100 })
 
   const handleClick = async (relation: Relation) => {
     const key = (relation.name || '').replace(' ', '_')
@@ -33,7 +33,16 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
   useEffect(() => {
     const current = selfRef.current
     if (current) {
-      setSvgSize(current.offsetWidth)
+      let width = current.offsetWidth
+      let height = (width / window.innerWidth) * window.innerHeight
+      const maxNodeCount = (width || 0) * (height || 0) / NODE_SIZE_FACTOR
+      const realNodeCount = relations.length
+      if (maxNodeCount > realNodeCount) {
+        const factor = Math.sqrt(maxNodeCount / (realNodeCount + 1))
+        width /= factor
+        height /= factor
+      }
+      setSvgSize({ width, height })
     }
   }, [selfRef])
 
@@ -46,7 +55,7 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
       relations: subRelations
     }]
 
-    const maxSize = (svgSize || 0) * (svgSize || 0) / NODE_SIZE_FACTOR
+    const maxSize = (svgSize.height || 0) * (svgSize.width || 0) / NODE_SIZE_FACTOR
     const size = Math.min(relations.length, maxSize)
     for (let i = 0; i < size; i++) {
       subRelations.push({
@@ -61,8 +70,8 @@ const RelationGraph: React.FC<RelationCanvasProps> = (props: RelationCanvasProps
   return (
     <div ref={selfRef}>
       <ReactRelationGraph
-        width={svgSize - widthMargin}
-        height={svgSize}
+        width={svgSize.width - widthMargin}
+        height={svgSize.height}
         relations={data}
         onClick={handleClick}
       />
