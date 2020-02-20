@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [0.2.4](https://github.com/aide-master/relations/compare/wiki@0.2.3...wiki@0.2.4) (2020-02-20)
+
+
+### Bug Fixes
+
+* modify svg size ([f8affbb](https://github.com/aide-master/relations/commit/f8affbb))
+
+
+
+
+
 ## [0.2.3](https://github.com/aide-master/relations/compare/wiki@0.2.2...wiki@0.2.3) (2020-02-17)
 
 **Note:** Version bump only for package wiki
